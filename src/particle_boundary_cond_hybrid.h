@@ -91,11 +91,47 @@ bool ParticleBoundaryCondHybrid<SPECIES,PARTICLE>::apply(pargrid::DataID particl
 		   N_badMacroParticles++;
 		   continue;
 	       }
-		if(x < 0 ||) {
-		       
-		  simClasses->logger << "Corrupted b/c x < 0! " << std::endl;
+		if(x < 0 || std::isnan(x) == true) {
+		  simClasses->logger << "Corrpt1 bc x < 0! " << std::endl;
 		  simClasses->logger << "x = " << x << std::endl;
 		  continue;}
+		if(y < 0 || std::isnan(y) == true) {
+                  simClasses->logger << "Corrpt2 bc y < 0! " << std::endl;
+                  simClasses->logger << "y = " << y << std::endl;
+                  continue;}
+		if(z < 0 || std::isnan(z) == true) {
+                  simClasses->logger << "Corrpt3 bc z < 0! " << std::endl;
+                  simClasses->logger << "z = " << z << std::endl;
+                  continue;}
+                if(x > bs[0]) {
+                  simClasses->logger << "Corrpt4 bc x > bs[0]! " << std::endl;
+                  simClasses->logger << "x = " << x << ", bs[0] = " << bs[0] << std::endl;
+                  continue;}
+                if(y > bs[1]) {
+                  simClasses->logger << "Corrpt5 bc y > bs[1]! " << std::endl;
+                  simClasses->logger << "y = " << y << std::endl;
+                  continue;}
+                if(z > bs[2]) {
+                  simClasses->logger << "Corrpt6 bc z > bs[2]! " << std::endl;
+                  simClasses->logger << "z = " << z << std::endl;
+                  continue;}
+                if(fabs(vx) > Hybrid::maxVi || std::isnan(vx) == true) {
+                  simClasses->logger << "Corrpt7 bc vx > max_v! " << std::endl;
+                  simClasses->logger << "vx = " << fabs(vx) << std::endl;
+                  continue;}
+                if(fabs(vy) > Hybrid::maxVi || std::isnan(vy) == true) {
+                  simClasses->logger << "Corrpt8 bc vy > max_v! " << std::endl;
+                  simClasses->logger << "vy = " << fabs(vy) << std::endl;
+                  continue;}
+                if(fabs(vz) > Hybrid::maxVi || std::isnan(vz) == true) {
+                  simClasses->logger << "Corrpt9 bc vz > max_v! " << std::endl;
+                  simClasses->logger << "vz = " << fabs(vz) << std::endl;
+                  continue;}
+                if(w != Hybrid::allPops[species.popid-1].w || std::isnan(w) == true) {
+                  simClasses->logger << "Corrpt10 bc w!= AllPop.w " << std::endl;
+                  simClasses->logger << "w = " << w << std::endl;
+                  simClasses->logger << "AllPop.w = " << Hybrid::allPops[species.popid-1].w << std::endl;
+                  continue;}
 	       ++current;
 	   }
 	   wrapper.resize(b,current);
