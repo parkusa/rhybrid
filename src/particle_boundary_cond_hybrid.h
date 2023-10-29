@@ -91,6 +91,11 @@ bool ParticleBoundaryCondHybrid<SPECIES,PARTICLE>::apply(pargrid::DataID particl
 		   N_badMacroParticles++;
 		   continue;
 	       }
+		if(x < 0 ||) {
+		       
+		  simClasses->logger << "Corrupted b/c x < 0! " << std::endl;
+		  simClasses->logger << "x = " << x << std::endl;
+		  continue;}
 	       ++current;
 	   }
 	   wrapper.resize(b,current);
