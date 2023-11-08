@@ -63,6 +63,16 @@ bool ParticleBoundaryCondHybrid<SPECIES,PARTICLE>::apply(pargrid::DataID particl
        simClasses->logger << "(RHYBRID) Removing corrupted macroparticles after a restart (" << species.name << ")" << std::endl;
        Real N_macroParticles = 0.0;
        Real N_badMacroParticles = 0.0;
+       Real cp1 = 0.0;
+       Real cp2 = 0.0;
+       Real cp3 = 0.0;
+       Real cp4 = 0.0;
+       Real cp5 = 0.0;
+       Real cp6 = 0.0;
+       Real cp7 = 0.0;
+       Real cp8 = 0.0;
+       Real cp9 = 0.0;
+       Real cp10 = 0.0;
        for(pargrid::CellID b=0; b<simClasses->pargrid.getNumberOfLocalCells(); ++b) {
 	   // get block sizes
 	   Real bs[3];
@@ -97,6 +107,7 @@ bool ParticleBoundaryCondHybrid<SPECIES,PARTICLE>::apply(pargrid::DataID particl
                   particles[current] = particles[end];
                   --end;
                   N_badMacroParticles++;
+                  cp1++;
 		  continue;}
 		if(y < 0 || std::isnan(y) == true) {
                   //simClasses->logger << "Corrpt2 bc y < 0! " << std::endl;
@@ -104,6 +115,7 @@ bool ParticleBoundaryCondHybrid<SPECIES,PARTICLE>::apply(pargrid::DataID particl
                   particles[current] = particles[end];
                   --end;
                   N_badMacroParticles++;
+                  cp2++;
                   continue;}
 		if(z < 0 || std::isnan(z) == true) {
                   //simClasses->logger << "Corrpt3 bc z < 0! " << std::endl;
@@ -111,6 +123,7 @@ bool ParticleBoundaryCondHybrid<SPECIES,PARTICLE>::apply(pargrid::DataID particl
                   particles[current] = particles[end];
                   --end;
                   N_badMacroParticles++;
+                  cp3++;
                   continue;}
                 if(x > bs[0]) {
                   //simClasses->logger << "Corrpt4 bc x > bs[0]! " << std::endl;
@@ -118,6 +131,7 @@ bool ParticleBoundaryCondHybrid<SPECIES,PARTICLE>::apply(pargrid::DataID particl
                   particles[current] = particles[end];
                   --end;
                   N_badMacroParticles++;
+                  cp4++;
                   continue;}
                 if(y > bs[1]) {
                   //simClasses->logger << "Corrpt5 bc y > bs[1]! " << std::endl;
@@ -125,6 +139,7 @@ bool ParticleBoundaryCondHybrid<SPECIES,PARTICLE>::apply(pargrid::DataID particl
                   particles[current] = particles[end];
                   --end;
                   N_badMacroParticles++;
+                  cp5++;
                   continue;}
                 if(z > bs[2]) {
                   //simClasses->logger << "Corrpt6 bc z > bs[2]! " << std::endl;
@@ -132,6 +147,7 @@ bool ParticleBoundaryCondHybrid<SPECIES,PARTICLE>::apply(pargrid::DataID particl
                   particles[current] = particles[end];
                   --end;
                   N_badMacroParticles++;
+                  cp6++;
                   continue;}
                 if(fabs(vx) > Hybrid::maxVi || std::isnan(vx) == true) {
                   //simClasses->logger << "Corrpt7 bc vx > max_v! " << std::endl;
@@ -139,6 +155,7 @@ bool ParticleBoundaryCondHybrid<SPECIES,PARTICLE>::apply(pargrid::DataID particl
                   particles[current] = particles[end];
                   --end;
                   N_badMacroParticles++;
+                  cp7++;
                   continue;}
                 if(fabs(vy) > Hybrid::maxVi || std::isnan(vy) == true) {
                   //simClasses->logger << "Corrpt8 bc vy > max_v! " << std::endl;
@@ -146,6 +163,7 @@ bool ParticleBoundaryCondHybrid<SPECIES,PARTICLE>::apply(pargrid::DataID particl
                   particles[current] = particles[end];
                   --end;
                   N_badMacroParticles++;
+                  cp8++;
                   continue;}
                 if(fabs(vz) > Hybrid::maxVi || std::isnan(vz) == true) {
                   //simClasses->logger << "Corrpt9 bc vz > max_v! " << std::endl;
@@ -153,6 +171,7 @@ bool ParticleBoundaryCondHybrid<SPECIES,PARTICLE>::apply(pargrid::DataID particl
                   particles[current] = particles[end];
                   --end;
                   N_badMacroParticles++;
+                  cp9++;
                   continue;}
                 if(w != Hybrid::allPops[species.popid-1].w || std::isnan(w) == true) {
                   //simClasses->logger << "Corrpt10 bc w!= AllPop.w " << std::endl;
@@ -161,6 +180,7 @@ bool ParticleBoundaryCondHybrid<SPECIES,PARTICLE>::apply(pargrid::DataID particl
                   particles[current] = particles[end];
                   --end;
                   N_badMacroParticles++;
+                  cp10++;
                   continue;}
 	       ++current;
 	   }
@@ -171,6 +191,17 @@ bool ParticleBoundaryCondHybrid<SPECIES,PARTICLE>::apply(pargrid::DataID particl
        Real N_badMacroParticlesGlobal = 0.0;
        MPI_Reduce(&N_macroParticles,&N_macroParticlesGlobal,1,MPI_Type<Real>(),MPI_SUM,sim->MASTER_RANK,sim->comm);
        MPI_Reduce(&N_badMacroParticles,&N_badMacroParticlesGlobal,1,MPI_Type<Real>(),MPI_SUM,sim->MASTER_RANK,sim->comm);
+       simClasses->logger << "Species: " << species.name << " cp1 = "<< cp1 << std::endl;
+       simClasses->logger << "Species: " << species.name << " cp2 = "<< cp2 << std::endl;
+       simClasses->logger << "Species: " << species.name << " cp3 = "<< cp3 << std::endl;
+       simClasses->logger << "Species: " << species.name << " cp4 = "<< cp4 << std::endl;
+       simClasses->logger << "Species: " << species.name << " cp5 = "<< cp5 << std::endl;
+       simClasses->logger << "Species: " << species.name << " cp6 = "<< cp6 << std::endl;
+       simClasses->logger << "Species: " << species.name << " cp7 = "<< cp7 << std::endl;
+       simClasses->logger << "Species: " << species.name << " cp8 = "<< cp8 << std::endl;
+       simClasses->logger << "Species: " << species.name << " cp9 = "<< cp9 << std::endl;
+       simClasses->logger << "Species: " << species.name << " cp10 = "<< cp10 << std::endl;
+       simClasses->logger << "Species: " << species.name << " Number of particles = "<< N_macroParticles << std::endl; 
        if(sim->mpiRank == sim->MASTER_RANK) {
 	   simClasses->logger
 	       << "Number of corrupted macroparticles removed: "
